@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meat Board — Elevated Kosher Catering</title>
+
+  <style>
+    :root {
+      --cream: #f7f3eb;
+      --ivory: #fffdf8;
+      --charcoal: #272622;
+      --muted: #77736a;
+      --gold: #b4935a;
+      --wood: #9a6740;
+      --wood-dark: #604027;
+      --line: rgba(39,38,34,.12);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--cream);
+      color: var(--charcoal);
+      overflow-x: hidden;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    /* HEADER */
+
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 100;
+      padding: 20px 5%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(247,243,235,.82);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .logo {
+      font-family: Georgia, serif;
+      font-size: 22px;
+      letter-spacing: 2px;
+      font-weight: 600;
+    }
+
+    .logo span {
+      color: var(--gold);
+    }
+
+    .vhq {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 11px;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      text-align: right;
+    }
+
+    .vhq-badge {
+      width: 42px;
+      height: 42px;
+      border: 1px solid var(--gold);
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-family: Georgia, serif;
+      font-size: 12px;
+      font-weight: bold;
+      color: var(--gold);
+    }
+
+    /* HERO */
+
+    .hero {
+      min-height: 100vh;
+      padding: 150px 7% 80px;
+      display: grid;
+      grid-template-columns: 1fr 1.1fr;
+      align-items: center;
+      gap: 50px;
+    }
+
+    .hero-copy {
+      max-width: 560px;
+    }
+
+    .eyebrow {
+      color: var(--gold);
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      font-size: 12px;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-family: Georgia, serif;
+      font-size: clamp(52px, 7vw, 92px);
+      line-height: .94;
+      font-weight: 500;
+      letter-spacing: -3px;
+      margin-bottom: 28px;
+    }
+
+    h1 em {
+      color: var(--gold);
+      font-style: italic;
+    }
+
+    .hero-copy p {
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.7;
+      max-width: 500px;
+      margin-bottom: 35px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 15px 25px;
+      background: var(--charcoal);
+      color: white;
+      border-radius: 100px;
+      font-size: 13px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      transition: .25s ease;
+    }
+
+    .button:hover {
+      transform: translateY(-3px);
+      background: #11110f;
+    }
+
+    /* BOARD */
+
+    .board-scene {
+      min-height: 560px;
+      display: grid;
+      place-items: center;
+      perspective: 1000px;
+    }
+
+    .board {
+      position: relative;
+      width: min(580px, 90vw);
+      aspect-ratio: 1.15 / 1;
+      border-radius: 48% 48% 45% 45%;
+      background:
+        repeating-linear-gradient(
+          0deg,
+          rgba(255,255,255,.05) 0px,
+          rgba(255,255,255,.05) 2px,
+          transparent 2px,
+          transparent 13px
+        ),
+        linear-gradient(135deg, #b27a4c, #7a4d2d);
+      box-shadow:
+        0 35px 70px rgba(65,40,20,.24),
+        inset 0 0 0 7px rgba(255,255,255,.08);
+      transform: rotateX(5deg) rotateZ(-2deg);
+      overflow: hidden;
+    }
+
+    .board::after {
+      content: "";
+      position: absolute;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      border: 7px solid rgba(54,32,18,.35);
+      top: 30px;
+      right: 45px;
+    }
+
+    .food {
+      position: absolute;
+      opacity: 0;
+      transform: translateY(-100px) rotate(-8deg) scale(.8);
+      transition:
+        opacity .65s ease,
+        transform .8s cubic-bezier(.2,.8,.2,1);
+    }
+
+    .food.visible {
+      opacity: 1;
+      transform: translateY(0) rotate(var(--rotation)) scale(1);
+    }
+
+    /* Thin steak slices */
+
+    .steak-slice {
+      width: 175px;
+      height: 45px;
+      border-radius: 55% 35% 45% 30%;
+      background:
+        radial-gradient(circle at 70% 35%, rgba(255,210,180,.55) 0 4%, transparent 5%),
+        linear-gradient(135deg, #a83f35, #742821 55%, #51201c);
+      box-shadow: 0 8px 15px rgba(45,20,10,.2);
+    }
+
+    .slice1 { left: 80px; top: 120px; --rotation: -12deg; }
+    .slice2 { left: 100px; top: 165px; --rotation: -8deg; }
+    .slice3 { left: 125px; top: 210px; --rotation: -4deg; }
+
+    .slice4 {
+      left: 275px;
+      top: 155px;
+      --rotation: 12deg;
+      width: 190px;
+    }
+
+    .slice5 {
+      left: 290px;
+      top: 205px;
+      --rotation: 8deg;
+      width: 180px;
+    }
+
+    .salami {
+      width: 125px;
+      height: 125px;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 30% 35%, #f0b3a0 0 4%, transparent 5%),
+        radial-gradient(circle at 65% 65%, #f0b3a0 0 4%, transparent 5%),
+        linear-gradient(135deg, #8d2929, #5e1717);
+      box-shadow: 0 8px 15px rgba(45,20,10,.2);
+    }
+
+    .salami1 {
+      right: 75px;
+      top: 105px;
+      --rotation: 8deg;
+    }
+
+    .salami2 {
+      right: 90px;
+      top: 190px;
+      --rotation: -4deg;
+    }
+
+    .chicken {
+      width: 145px;
+      height: 65px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #d8a77a, #a56d42);
+      box-shadow: 0 8px 15px rgba(45,20,10,.18);
+    }
+
+    .chicken1 {
+      left: 65px;
+      bottom: 90px;
+      --rotation: 10deg;
+    }
+
+    .chicken2 {
+      left: 180px;
+      bottom: 65px;
+      --rotation: -8deg;
+    }
+
+    .jerky {
+      width: 120px;
+      height: 48px;
+      border-radius: 30% 50% 35% 45%;
+      background: linear-gradient(145deg, #5c3823, #2e1b12);
+      box-shadow: 0 8px 15px rgba(45,20,10,.2);
+    }
+
+    .jerky1 {
+      right: 65px;
+      bottom: 85px;
+      --rotation: -12deg;
+    }
+
+    /* Ramekins */
+
+    .ramekin {
+      width: 72px;
+      height: 48px;
+      border-radius: 10px 10px 35px 35px;
+      background: #eee8dc;
+      box-shadow: 0 8px 12px rgba(45,20,10,.18);
+    }
+
+    .ramekin::after {
+      content: "";
+      display: block;
+      width: 52px;
+      height: 26px;
+      margin: 6px auto;
+      border-radius: 50%;
+      background: #647044;
+    }
+
+    .ramekin1 {
+      right: 180px;
+      bottom: 65px;
+      --rotation: 5deg;
+    }
+
+    .ramekin2 {
+      right: 70px;
+      bottom: 170px;
+      --rotation: -5deg;
+    }
+
+    /* SCROLL SECTION */
+
+    .story {
+      min-height: 110vh;
+      padding: 100px 8%;
+      display: flex;
+      align-items: center;
+      background: var(--ivory);
+    }
+
+    .story-inner {
+      max-width: 850px;
+    }
+
+    .story h2,
+    .customize h2 {
+      font-family: Georgia, serif;
+      font-size: clamp(42px, 6vw, 72px);
+      font-weight: 500;
+      line-height: 1;
+      margin-bottom: 25px;
+    }
+
+    .story p {
+      color: var(--muted);
+      line-height: 1.8;
+      font-size: 18px;
+      max-width: 650px;
+    }
+
+    /* CUSTOMIZATION */
+
+    .customize {
+      padding: 110px 7%;
+      background: var(--cream);
+    }
+
+    .section-heading {
+      max-width: 700px;
+      margin-bottom: 55px;
+    }
+
+    .section-heading p {
+      color: var(--muted);
+      line-height: 1.7;
+      font-size: 17px;
+    }
+
+    .options {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 25px;
+      max-width: 1050px;
+    }
+
+    .option-card {
+      background: var(--ivory);
+      border: 1px solid var(--line);
+      border-radius: 25px;
+      padding: 30px;
+    }
+
+    .option-card h3 {
+      font-family: Georgia, serif;
+      font-size: 25px;
+      margin-bottom: 20px;
+    }
+
+    .choices {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .choice {
+      border: 1px solid var(--line);
+      background: transparent;
+      padding: 11px 15px;
+      border-radius: 100px;
+      cursor: pointer;
+      transition: .2s ease;
+      font-size: 13px;
+    }
+
+    .choice:hover,
+    .choice.selected {
+      background: var(--charcoal);
+      color: white;
+      border-color: var(--charcoal);
+    }
+
+    /* FINAL CTA */
+
+    .cta {
+      padding: 120px 7%;
+      text-align: center;
+      background: #302d27;
+      color: white;
+    }
+
+    .cta h2 {
+      font-family: Georgia, serif;
+      font-size: clamp(45px, 7vw, 85px);
+      font-weight: 400;
+      margin-bottom: 25px;
+    }
+
+    .cta p {
+      color: #c9c4b9;
+      margin: 0 auto 35px;
+      max-width: 550px;
+      line-height: 1.7;
+    }
+
+    .cta .button {
+      background: #f4eee2;
+      color: #292722;
+    }
+
+    /* FLOATING CONTACT */
+
+    .contact-float {
+      position: fixed;
+      right: 25px;
+      bottom: 25px;
+      z-index: 90;
+      background: var(--charcoal);
+      color: white;
+      padding: 15px 20px;
+      border-radius: 100px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.2);
+      font-size: 12px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    /* MOBILE */
+
+    @media (max-width: 800px) {
+      header {
+        padding: 15px 5%;
+      }
+
+      .vhq span {
+        display: none;
+      }
+
+      .hero {
+        grid-template-columns: 1fr;
+        padding-top: 125px;
+      }
+
+      .board-scene {
+        min-height: 420px;
+      }
+
+      .board {
+        transform: scale(.8) rotateX(5deg) rotateZ(-2deg);
+      }
+
+      .options {
+        grid-template-columns: 1fr;
+      }
+
+      .contact-float {
+        right: 15px;
+        bottom: 15px;
+      }
+    }
+
+    @media (max-width: 520px) {
+      h1 {
+        font-size: 52px;
+      }
+
+      .board {
+        transform: scale(.58) rotateX(5deg) rotateZ(-2deg);
+        transform-origin: center;
+      }
+
+      .board-scene {
+        min-height: 300px;
+        margin-top: -30px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <div class="logo">MEAT<span>.</span>BOARD</div>
+
+    <div class="vhq">
+      <span>Under Kosher Supervision<br>Vaad Harabonim of Queens</span>
+      <div class="vhq-badge">VHQ</div>
+    </div>
+  </header>
+
+  <main>
+
+    <section class="hero">
+      <div class="hero-copy">
+        <div class="eyebrow">Elevated Kosher Catering</div>
+
+        <h1>
+          Built for the<br>
+          <em>table.</em>
+        </h1>
+
+        <p>
+          Thinly sliced premium meats, crafted into beautiful boards
+          for Shabbat, holidays, celebrations and unforgettable events.
+        </p>
+
+        <a class="button" href="#customize">
+          Build Your Board
+        </a>
+      </div>
+
+      <div class="board-scene">
+        <div class="board" id="board">
+
+          <div class="food steak-slice slice1"></div>
+          <div class="food steak-slice slice2"></div>
+          <div class="food steak-slice slice3"></div>
+          <div class="food steak-slice slice4"></div>
+          <div class="food steak-slice slice5"></div>
+
+          <div class="food salami salami1"></div>
+          <div class="food salami salami2"></div>
+
+          <div class="food chicken chicken1"></div>
+          <div class="food chicken chicken2"></div>
+
+          <div class="food jerky jerky1"></div>
+
+          <div class="food ramekin ramekin1"></div>
+          <div class="food ramekin ramekin2"></div>
+
+        </div>
+      </div>
+    </section>
+
+    <section class="story">
+      <div class="story-inner">
+        <div class="eyebrow">The Board Comes Together</div>
+
+        <h2>
+          One board.<br>
+          Your way.
+        </h2>
+
+        <p>
+          Scroll to build the experience. Thin slices of steak,
+          premium salami, chicken, jerky and accompaniments come
+          together to create a board designed around your event.
+        </p>
+      </div>
+    </section>
+
+    <section class="customize" id="customize">
+
+      <div class="section-heading">
+        <div class="eyebrow">Customize</div>
+
+        <h2>Create your board.</h2>
+
+        <p>
+          Choose your cuts, doneness, seasoning and additional meats.
+          Every board can be built differently for your Shabbat,
+          holiday or event.
+        </p>
+      </div>
+
+      <div class="options">
+
+        <div class="option-card">
+          <h3>Steak Cut</h3>
+
+          <div class="choices">
+            <button class="choice">Ribeye</button>
+            <button class="choice">Strip Steak</button>
+            <button class="choice">London Broil</button>
+            <button class="choice">Top Sirloin</button>
+            <button class="choice">Other Cut</button>
+          </div>
+        </div>
+
+        <div class="option-card">
+          <h3>Temperature</h3>
+
+          <div class="choices">
+            <button class="choice">Rare</button>
+            <button class="choice">Medium Rare</button>
+            <button class="choice">Medium</button>
+            <button class="choice">Medium Well</button>
+            <button class="choice">Well Done</button>
+          </div>
+        </div>
+
+        <div class="option-card">
+          <h3>Seasoning</h3>
+
+          <div class="choices">
+            <button class="choice">Salt & Pepper</button>
+            <button class="choice">Garlic Herb</button>
+            <button class="choice">Pepper Crust</button>
+            <button class="choice">Smoky</button>
+            <button class="choice">Chef's Choice</button>
+          </div>
+        </div>
+
+        <div class="option-card">
+          <h3>Add to the Board</h3>
+
+          <div class="choices">
+            <button class="choice">Salami</button>
+            <button class="choice">Beef Jerky</button>
+            <button class="choice">Chicken</button>
+            <button class="choice">Wings</button>
+            <button class="choice">Poppers</button>
+            <button class="choice">Olives</button>
+            <button class="choice">Condiments</button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <section class="cta">
+      <h2>Let's make your board.</h2>
+
+      <p>
+        Tell us what you're celebrating and we'll help create
+        a custom meat board for your table.
+      </p>
+
+      <a class="button" href="tel:13478208835">
+        Contact Us · 347-820-8835
+      </a>
+    </section>
+
+  </main>
+
+  <a class="contact-float" href="tel:13478208835">
+    Contact Us
+  </a>
+
+  <script>
+    const foods = document.querySelectorAll(".food");
+
+    function updateBoardAnimation() {
+      const trigger = window.innerHeight * 0.75;
+
+      foods.forEach((food, index) => {
+        const rect = food.getBoundingClientRect();
+
+        if (rect.top < trigger) {
+          food.classList.add("visible");
+        }
+      });
+    }
+
+    window.addEventListener("scroll", updateBoardAnimation);
+    window.addEventListener("load", updateBoardAnimation);
+
+    const choices = document.querySelectorAll(".choice");
+
+    choices.forEach(choice => {
+      choice.addEventListener("click", () => {
+        choice.classList.toggle("selected");
+      });
+    });
+  </script>
+
+</body>
+</html>
